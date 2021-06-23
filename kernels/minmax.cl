@@ -1,0 +1,48 @@
+#define localBarrier() barrier(CLK_LOCAL_MEM_FENCE)
+kernel void minmax (
+    const int rowspan,
+    global const int * restrict source,
+    global const int * runs,
+    global int2 * restrict target,
+    local int2 * scratch
+) {
+    local int length;
+    const int workgroup_id = get_global_id(0);
+    const int local_id = get_local_id(1);
+    const int local_size = get_local_size(1);
+    
+    if ( local_id == 0 ){
+        length = runs[workgroup_id];
+    }
+    localBarrier();
+
+    for ( int thread = local_id; thread < rowspan; thread += local_size ) {
+        const int2 out_of_bounds = (int2)(INT_MAX,INT_MIN);
+        scratch[thread] = thread < length - 1 && thread > 0
+            ? (int2)(source[ workgroup_id * rowspan + thread])
+            : out_of_bounds;
+    }
+    localBarrier();
+
+    for ( 
+            int amount = 1, shift = 1 << amount; 
+            shift <= rowspan; 
+            ++amount, shift = 1 << amount
+        ){
+        const int mask = local_id & (( shift )-1); // 1 3 7
+        const int middle = (shift) >> 1; // 1 2 4
+        for ( int thread = local_id; thread < rowspan && mask == 0; thread+=local_size ) {
+            scratch[thread].y = scratch[thread].y > scratch[thread+middle].y 
+                ? scratch[thread].y 
+                : scratch[thread+middle].y;
+            
+            scratch[thread].x = scratch[thread].x < scratch[thread+middle].x 
+                ? scratch[thread].x 
+                : scratch[thread+middle].x;
+        }
+        localBarrier();
+    }
+    if ( local_id == 0 )
+        target[workgroup_id] = scratch[0];
+
+}

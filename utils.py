@@ -47,6 +47,9 @@ class ArrayBuffer:
     def size( self ):
         return np.int32(self.host.nbytes)
     @property
+    def shape( self ):
+        return np.int32(self.host.shape)
+    @property
     def dtype( self ):
         return self.host.dtype
 
@@ -156,6 +159,11 @@ class Helper:
             self.ctx.devices[0].platform.name,
             self.ctx.devices[0].name
         ))
+    
+    def bigButNoTooBig(self, max: int ):
+        device_max_group_size = self.ctx.devices[0].max_work_group_size
+        min = device_max_group_size if device_max_group_size < max else max
+        return min 
 # Classe helper per misurare il tempo di esecuzione di un evento
 class ProfilingHelper:
     def __init__ ( self, event: cl.Event ):

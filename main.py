@@ -11,18 +11,18 @@ def extract_step( helper: Helper, source: str, threshold: float ) -> tuple[cl.Ev
     grid = targetImage.shape[:2]
     grid = (targetImage.shape[0], targetImage.shape[1] >> 2)
     threshold = 0.5*255
-    run = utils.extract(
+    event = utils.extract(
         helper.q, grid, None, sourceImage.device, targetImage.device, np.full((4,),threshold, dtype=np.uint32)
     )
     sourceImage.release()
     targetImage.pull()
 
-    return run, targetImage
+    return event, targetImage
 
 def parle_step( helper: Helper, source: PictureBuffer ) -> tuple[cl.Event, ArrayBuffer, ArrayBuffer, ArrayBuffer]:
     parle = helper.program("kernels/parle.cl").parle
 
-    device_max_group_size = helper.ctx.devices[0].max_work_group_size
+    grid_on_y = helper.bigButNoTooBig(source.shape[1])
 
     runs = helper.array( np.zeros(source.shape[0], dtype=np.int32) , 'rw' )
 
@@ -30,8 +30,8 @@ def parle_step( helper: Helper, source: PictureBuffer ) -> tuple[cl.Event, Array
 
     countsOut = helper.array( np.zeros(source.shape[:2], dtype=np.int32), 'rw' )
 
-    launch_grid = (source.shape[0], device_max_group_size)
-    local_grid = (1, device_max_group_size)
+    launch_grid = (source.shape[0], grid_on_y)
+    local_grid = (1, grid_on_y)
     
     event = parle( 
         helper.q,
@@ -45,10 +45,33 @@ def parle_step( helper: Helper, source: PictureBuffer ) -> tuple[cl.Event, Array
         cl.LocalMemory( source.shape[1] * 4 ),
         cl.LocalMemory( source.shape[1] * 4 )
     )
-    event.wait()
+
     return event, countsOut, symbolsOut, runs
     
+def minmax_step( helper: Helper, source: ArrayBuffer, runs: ArrayBuffer ) -> tuple[cl.Event, ArrayBuffer]:
+    target = helper.array( np.zeros((source.shape[0],2), dtype=np.int32) , 'rw' )
+    minmax = helper.program("kernels/minmax.cl").minmax
 
+    grid_on_y = helper.bigButNoTooBig(source.shape[1])
+
+    launch_grid = (source.shape[0], grid_on_y)
+    local_grid = (1, grid_on_y)
+
+    event = minmax(
+        helper.q,
+        launch_grid,
+        local_grid,
+        np.int32(source.shape[1]),
+        source.device,
+        runs.device,
+        target.device,
+        cl.LocalMemory( source.shape[1] * 8 )
+    )
+
+    return event, target
+
+def remap_step( helper: Helper, target: ArrayBuffer, minmaxs: ArrayBuffer, runs: ArrayBuffer) -> cl.Event:
+    pass
 if __name__ == '__main__':
     # context
     ctx = cl.create_some_context()
@@ -66,12 +89,17 @@ if __name__ == '__main__':
     event, countsOut, symbolsOut, runs = parle_step(helper, pictureResult)
     print("Parle took {0}".format(helper.profile( event ).prettymicro))
     
-    runs.pull()
-    countsOut.pull()
-    symbolsOut.pull()
-    print( runs.host[0] )
-    print( countsOut.host[0][:runs.host[0]] )
-    print( symbolsOut.host[0][:runs.host[0]] )
+    #runs.pull()
+    #countsOut.pull()
+    #symbolsOut.pull()
+    #print( runs.host[0] )
+    #print( countsOut.host[0][:runs.host[0]] )
+    #print( symbolsOut.host[0][:runs.host[0]] )
 
+    event, minmaxs = minmax_step( helper, countsOut, runs )
+    print("Minmax took {0}".format(helper.profile( event ).prettymicro))
+
+    #minmaxs.pull()
+    #print(minmaxs.host)
 
 
