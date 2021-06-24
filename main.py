@@ -22,14 +22,14 @@ def extract_step( helper: Helper, source: str, threshold: float ) -> tuple[cl.Ev
 def parle_step( helper: Helper, source: PictureBuffer ) -> tuple[cl.Event, ArrayBuffer, ArrayBuffer, ArrayBuffer]:
     parle = helper.program("kernels/parle.cl").parle
 
-    grid_on_y = helper.bigButNoTooBig(source.shape[1])
 
     runs = helper.array( np.zeros(source.shape[0], dtype=np.int32) , 'rw' )
 
     symbolsOut = helper.array( np.zeros(source.shape[:2], dtype=np.int32), 'rw' )
 
     countsOut = helper.array( np.zeros(source.shape[:2], dtype=np.int32), 'rw' )
-
+    
+    grid_on_y = helper.bigButNoTooBig(source.shape[1])
     launch_grid = (source.shape[0], grid_on_y)
     local_grid = (1, grid_on_y)
     
@@ -70,8 +70,50 @@ def minmax_step( helper: Helper, source: ArrayBuffer, runs: ArrayBuffer ) -> tup
 
     return event, target
 
-def remap_step( helper: Helper, target: ArrayBuffer, minmaxs: ArrayBuffer, runs: ArrayBuffer) -> cl.Event:
-    pass
+def remap_step( helper: Helper, target: ArrayBuffer, runs: ArrayBuffer, minmaxs: ArrayBuffer) -> cl.Event:
+    remap = helper.program("kernels/remap.cl").remap
+    
+    grid_on_y = helper.bigButNoTooBig(target.shape[1])
+    launch_grid = (target.shape[0], grid_on_y)
+    local_grid = (1, grid_on_y)
+
+    event = remap(
+        helper.q,
+        launch_grid,
+        local_grid,
+        np.int32(target.shape[1]),
+        target.device,
+        runs.device,
+        minmaxs.device
+    )
+
+    return event
+
+def unparle_step( helper: Helper, symbolsIn: ArrayBuffer, countsIn: ArrayBuffer, runs: ArrayBuffer) -> tuple[cl.Event, ArrayBuffer, ArrayBuffer]:
+    unparle = helper.program("kernels/unparle.cl").unparle
+
+    grid_on_y = helper.bigButNoTooBig(symbolsIn.shape[1])
+    launch_grid = (symbolsIn.shape[0], grid_on_y)
+    local_grid = (1, grid_on_y)
+
+    lengths = helper.array( np.zeros(symbolsIn.shape[0], dtype=np.int32) , 'rw' )
+    results = helper.array( np.zeros(symbolsIn.shape[:2], dtype=np.int32), 'rw' )
+
+    event = unparle(
+        helper.q,
+        launch_grid,
+        local_grid,
+        np.int32(results.shape[1]),
+        symbolsIn.device,
+        countsIn.device,
+        runs.device,
+        results.device,
+        lengths.device,
+        cl.LocalMemory( results.shape[1] * 4 ),
+        cl.LocalMemory( results.shape[1] * 4 )
+    )
+    return event, results, lengths
+
 if __name__ == '__main__':
     # context
     ctx = cl.create_some_context()
@@ -99,7 +141,19 @@ if __name__ == '__main__':
     event, minmaxs = minmax_step( helper, countsOut, runs )
     print("Minmax took {0}".format(helper.profile( event ).prettymicro))
 
+    event = remap_step( helper, countsOut, runs, minmaxs )
+    print("Remap took {0}".format(helper.profile( event ).prettymicro))
+    #countsOut.pull()
+    #symbolsOut.pull()
+    #runs.pull()
+    #print( symbolsOut.host[0][:runs.host[0]] )
+    #print( countsOut.host[0][:runs.host[0]] )
     #minmaxs.pull()
     #print(minmaxs.host)
-
+    event, results, lengths = unparle_step( helper, symbolsOut, countsOut, runs)
+    print("Unparle took {0}".format(helper.profile( event ).prettymicro))
+    results.pull()
+    lengths.pull()
+    print(lengths.host[0])
+    print(results.host[0])
 

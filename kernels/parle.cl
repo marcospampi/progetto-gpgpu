@@ -39,7 +39,6 @@ kernel void parle (
     }
 
     // compactMask
-    int run = 0;
     for ( int thread = local_id; thread < rowspan; thread += local_size ) {
         if ( thread == ( rowspan - 1) ) {
             compactMask[mask[thread]] = thread + 1;

@@ -6,8 +6,8 @@ kernel void remap(
     global const int * restrict runs,
     global const int2 * minmaxs
 ) {
-    local float2 minmax;
-    local float maxminusmin;
+    local float4 thresholds;
+    local float minimum;
     local int length;
 
     const int workgroup_id = get_global_id(0);
@@ -16,16 +16,29 @@ kernel void remap(
 
     if ( local_id == 0 ) {
         length = runs[workgroup_id];
-        minmax = convert_float2(minmaxs[workgroup_id]);
-        maxminusmin = minmax.y - minmax.x;
+        float2 minmax = convert_float2(minmaxs[workgroup_id]);
+        float thresh = minmax.y - minmax.x;
+        minimum = minmax.x;
+        thresholds.x = thresh / 4;
+        thresholds.y = thresh / 2;
+        thresholds.z = thresh / 2 + thresh / 4;
+        thresholds.w = thresh;
+        
     }
     localBarrier();
 
-    for ( int thread = local_id; thread < rowspan; thread += local_size ) {
-        const float src = (float)target[ workgroup_id * rowspan + thread] - minmax.x;
-        int type =
-            src < minmax
-        
-        
+    for ( int thread = local_id; thread < length; thread += local_size ) {
+        const float src = (float)target[ workgroup_id * rowspan + thread ] - minimum;
+        int count = 
+            src <= thresholds.x 
+                ? 1
+                : src <= thresholds.y
+                    ? 2
+                    : src <= thresholds.z
+                        ? 3
+                        : src <= thresholds.w
+                            ? 4
+                            : 1;
+        target[ workgroup_id * rowspan + thread ] = count;
     }
 }
