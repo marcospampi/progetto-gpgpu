@@ -3,10 +3,10 @@ from numpy.core.defchararray import count
 from numpy.lib.utils import source
 import pyopencl as cl
 from utils import Helper, ProfilingHelper, PictureBuffer, ArrayBuffer
-
+from decode import decode_ean13
 def extract_step( helper: Helper, source: str, threshold: float ) -> tuple[cl.Event,PictureBuffer]:
     utils = helper.program( "kernels/utils.cl" )
-    sourceImage = helper.picture( source, 'r' ).push()
+    sourceImage = helper.picture( source, 'r', resize= (1024,1024)).push()
     targetImage = helper.picture( sourceImage.shape, 'rw' )
     grid = targetImage.shape[:2]
     grid = (targetImage.shape[0], targetImage.shape[1] >> 2)
@@ -125,35 +125,36 @@ if __name__ == '__main__':
     helper = Helper( ctx, q )
     helper.printInfo()
 
-    event, pictureResult = extract_step( helper, "samples/sample_row.jpg", 0.5)
+    event, pictureResult = extract_step( helper, "samples/desamplesss.jpg", 0.5)
     print("Extract took {0}".format(helper.profile( event ).prettymicro))
 
     event, countsOut, symbolsOut, runs = parle_step(helper, pictureResult)
     print("Parle took {0}".format(helper.profile( event ).prettymicro))
     
-    #runs.pull()
-    #countsOut.pull()
-    #symbolsOut.pull()
-    #print( runs.host[0] )
-    #print( countsOut.host[0][:runs.host[0]] )
-    #print( symbolsOut.host[0][:runs.host[0]] )
-
     event, minmaxs = minmax_step( helper, countsOut, runs )
     print("Minmax took {0}".format(helper.profile( event ).prettymicro))
 
     event = remap_step( helper, countsOut, runs, minmaxs )
     print("Remap took {0}".format(helper.profile( event ).prettymicro))
-    #countsOut.pull()
-    #symbolsOut.pull()
-    #runs.pull()
-    #print( symbolsOut.host[0][:runs.host[0]] )
-    #print( countsOut.host[0][:runs.host[0]] )
-    #minmaxs.pull()
-    #print(minmaxs.host)
+
+
     event, results, lengths = unparle_step( helper, symbolsOut, countsOut, runs)
     print("Unparle took {0}".format(helper.profile( event ).prettymicro))
+
     results.pull()
     lengths.pull()
-    print(lengths.host[0])
-    print(results.host[0][:lengths.host[0]])
 
+
+    found_count = 0
+    found_map = dict()
+    
+    for i, data in enumerate(results.host):
+        length = lengths.host[i]
+        if length > 1:
+            tupled = tuple(data[:length])
+            exists = found_map[tupled] if tupled in found_map else 0
+            found_map[tupled] = exists + 1
+    decoded = [ decode_ean13(i) for i in found_map ]
+    for e in decoded:
+        if e != None:
+            print(*e)

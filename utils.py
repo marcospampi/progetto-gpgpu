@@ -62,7 +62,7 @@ class PictureBuffer:
     host: np.array = None
     device: cl.Buffer = None
     image: Image.Image
-    def __init__( self, q: cl.CommandQueue, ctx: cl.Context, source: Union[str,tuple], mode: Union[str,int], format = np.uint8):
+    def __init__( self, q: cl.CommandQueue, ctx: cl.Context, source: Union[str,tuple], mode: Union[str,int], resize: tuple = None):
         self.q = q
         self.ctx = ctx
         flags = None
@@ -77,9 +77,13 @@ class PictureBuffer:
             flags = mode
         if ( type(source) is str):
             self.image = Image.open( source )
+            if resize != None:
+                self.image = self.image.resize( (resize[0], resize[1]) )
+            
             tmp = np.asarray( self.image, )
             if tmp.shape[-1] == 3:
                 tmp = np.dstack((tmp, np.full(tmp.shape[:-1],255)))
+            
             self.host = np.array( tmp, dtype=np.uint8)
         elif ( type(source) is Image.Image ):
             self.image = source
@@ -93,6 +97,7 @@ class PictureBuffer:
             raise Exception("Invalid argument")
         
         self.device = cl.Buffer( ctx, flags, self.host.nbytes)
+        
 
     def push(self, wait: bool = False):
         event = cl.enqueue_copy(self.q, self.device, self.host )
@@ -141,8 +146,8 @@ class Helper:
     def array( self, host: np.array, mode: Union[str, int]) -> ArrayBuffer:
         return ArrayBuffer( self.q, self.ctx, host, mode)
     
-    def picture( self, pictureOrShape: Union[str,tuple,Image.Image], mode: Union[str,int], dtype = None) -> PictureBuffer:
-        return PictureBuffer( self.q, self.ctx, pictureOrShape, mode, dtype)
+    def picture( self, pictureOrShape: Union[str,tuple,Image.Image], mode: Union[str,int], resize = None) -> PictureBuffer:
+        return PictureBuffer( self.q, self.ctx, pictureOrShape, mode, resize = resize)
     
     def program( self, path: str ) -> cl.Program:
         if path in self.compiledPrograms:
