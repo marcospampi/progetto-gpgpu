@@ -155,5 +155,5 @@ if __name__ == '__main__':
     results.pull()
     lengths.pull()
     print(lengths.host[0])
-    print(results.host[0])
+    print(results.host[0][:lengths.host[0]])
 
