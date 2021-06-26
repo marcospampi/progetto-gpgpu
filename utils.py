@@ -149,12 +149,18 @@ class Helper:
     def picture( self, pictureOrShape: Union[str,tuple,Image.Image], mode: Union[str,int], resize = None) -> PictureBuffer:
         return PictureBuffer( self.q, self.ctx, pictureOrShape, mode, resize = resize)
     
-    def program( self, path: str ) -> cl.Program:
-        if path in self.compiledPrograms:
-            return self.compiledPrograms[path]
+    def program( self, path: str, options: dict = None ) -> cl.Program:
+        dictionaryKey = path + ('?' + str(dict)) if options is not None else ''
+        if dictionaryKey in self.compiledPrograms:
+            return self.compiledPrograms[dictionaryKey]
         else:
-            program =  cl.Program( self.ctx, open(path).read()).build()
-            self.compiledPrograms[path] = program
+            if options is None: 
+                program =  cl.Program( self.ctx, open(path).read()).build()
+            else:
+                options = ['-D', *("{0}={1}".format(key,value) for key, value in options.items())]
+                program =  cl.Program( self.ctx, open(path).read()).build( options = options )
+            
+            self.compiledPrograms[dictionaryKey] = program
             return program
         
     def profile( self, event: cl.Event ):
