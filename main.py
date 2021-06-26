@@ -8,6 +8,7 @@ def extract_step( helper: Helper, source: str, threshold: float ) -> tuple[cl.Ev
     utils = helper.program( "kernels/utils.cl" )
     sourceImage = helper.picture( source, 'r', resize= (1024,1024)).push()
     targetImage = helper.picture( sourceImage.shape, 'rw' )
+    print(sourceImage.shape)
     grid = targetImage.shape[:2]
     grid = (targetImage.shape[0], targetImage.shape[1] >> 2)
     threshold = 0.5*255
@@ -121,11 +122,11 @@ if __name__ == '__main__':
     # command queue
     q = cl.CommandQueue( ctx, properties = cl.command_queue_properties.PROFILING_ENABLE )
     
-    # fucking helper
+    # helper santissimo
     helper = Helper( ctx, q )
     helper.printInfo()
 
-    event, pictureResult = extract_step( helper, "samples/desamplesss.jpg", 0.5)
+    event, pictureResult = extract_step( helper, "samples/baobab.jpg", 0.5)
     print("Extract took {0}".format(helper.profile( event ).prettymicro))
 
     event, countsOut, symbolsOut, runs = parle_step(helper, pictureResult)
@@ -155,6 +156,7 @@ if __name__ == '__main__':
             exists = found_map[tupled] if tupled in found_map else 0
             found_map[tupled] = exists + 1
     decoded = [ decode_ean13(i) for i in found_map ]
+    decoded = [ i for i in decoded if i is not None]
+    print("Trovati {0} codici:".format(len(decoded)))
     for e in decoded:
-        if e != None:
-            print(*e)
+        print(*e)

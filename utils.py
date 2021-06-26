@@ -150,7 +150,9 @@ class Helper:
         return PictureBuffer( self.q, self.ctx, pictureOrShape, mode, resize = resize)
     
     def program( self, path: str, options: dict = None ) -> cl.Program:
-        dictionaryKey = path + ('?' + str(dict)) if options is not None else ''
+        dictionaryKey = path
+        if options is not None:
+            dictionaryKey +=('?' + str(dict))
         if dictionaryKey in self.compiledPrograms:
             return self.compiledPrograms[dictionaryKey]
         else:

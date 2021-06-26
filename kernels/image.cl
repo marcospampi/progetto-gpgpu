@@ -89,17 +89,24 @@ kernel void blur_operator(
 
 kernel void mask(
     global const int * input,
+    global const int * source,
     global int * output
 ) {
+    local int count;
+    count = 0;
+    barrier(CLK_LOCAL_MEM_FENCE);
     const int ix = get_global_id(0);
     const int iy = get_global_id(1);
     const int nx = get_global_size(0);
     const int ny = get_global_size(1);
-    const int2 l = (int2)(get_local_id(0), get_local_id(1)); 
-    local int memory[16][16];
+    
+    const int elem = input[iy*nx + ix];
+    atomic_add(&count, elem < 1 ? 1 : 0);
 
-    //memory[l.x][l.y] = input[iy * nx + ny];
-    if ( ix == 0 && iy == 0)
-        printf("%d %d %d %d\n", l.x,l.y, get_local_size(0), get_local_size(1));
+    barrier(CLK_LOCAL_MEM_FENCE);
+
+    output[iy * nx + ix ] = (count < 196 ? source[iy * nx + ix] : 255);
+
     
 }
+

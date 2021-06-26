@@ -71,8 +71,11 @@ def decode_ean13( seq: list[int] ) -> tuple[tuple,str]:
     except Exception as e:
         return None
     first_digit_tuple = tuple(map( lambda el: el['enc'], l_decoded ))
-    first_digit = ean13_first_digit_map[first_digit_tuple]
-    
+
+    try:
+        first_digit = ean13_first_digit_map[first_digit_tuple]
+    except Exception as e:
+        return None
     l_digits = list(map(lambda el: el['digit'], l_decoded))
     r_digits = list(map(lambda el: el['digit'], r_decoded))
     
