@@ -16,10 +16,10 @@ kernel void minmax (
     }
     localBarrier();
 
-    for ( int thread = local_id; thread < rowspan; thread += local_size ) {
+    for ( int i = local_id; i < rowspan; i += local_size ) {
         const int2 out_of_bounds = (int2)(INT_MAX,INT_MIN);
-        scratch[thread] = thread < length - 1 && thread > 0
-            ? (int2)(source[ workgroup_id * rowspan + thread])
+        scratch[i] = i < length - 1 && i > 0
+            ? (int2)(source[ workgroup_id * rowspan + i])
             : out_of_bounds;
     }
     localBarrier();
@@ -31,14 +31,16 @@ kernel void minmax (
         ){
         const int mask = local_id & (( shift )-1); // 1 3 7
         const int middle = (shift) >> 1; // 1 2 4
-        for ( int thread = local_id; thread < rowspan && mask == 0; thread+=local_size ) {
-            scratch[thread].y = scratch[thread].y > scratch[thread+middle].y 
-                ? scratch[thread].y 
-                : scratch[thread+middle].y;
-            
-            scratch[thread].x = scratch[thread].x < scratch[thread+middle].x 
-                ? scratch[thread].x 
-                : scratch[thread+middle].x;
+        for ( int i = local_id; i < rowspan && mask == 0; i+=local_size ) {
+            scratch[i].y =  max( scratch[i+middle].y, scratch[i].y );
+            //scratch[i].y > scratch[i+middle].y 
+            //    ? scratch[i].y 
+            //    : scratch[i+middle].y;
+            scratch[i].x =  min( scratch[i+middle].x, scratch[i].x );
+
+            //scratch[i].x = scratch[i].x < scratch[i+middle].x 
+            //    ? scratch[i].x 
+            //    : scratch[i+middle].x;
         }
         localBarrier();
     }

@@ -19,49 +19,49 @@ kernel void parle (
     const int local_size = get_local_size(1);
     
     // create mask in lmem
-    for ( int thread = local_id; thread < rowspan; thread += local_size ) {
+    for ( int i = local_id; i < rowspan; i += local_size ) {
 
-        mask[thread] = thread == 0 ? 1 :
-        source[workgroup_id * rowspan + thread] != source[workgroup_id * rowspan + thread - 1];
+        mask[i] = i == 0 ? 1 :
+        source[workgroup_id * rowspan + i] != source[workgroup_id * rowspan + i - 1];
     }
     localBarrier();
 
     // scan mask
     for ( int shift = 0; (1 << shift) < rowspan; ++shift ) {
-        for ( int thread = local_id; thread < rowspan; thread += local_size ) {
-            const int toggle = thread & (1 << shift);
-            const int step = thread & ((1 << shift) - 1);
-            if ( toggle && thread != 0 ) {
-                mask[thread] += mask[thread - step - 1];
+        for ( int i = local_id; i < rowspan; i += local_size ) {
+            const int toggle = i & (1 << shift);
+            const int step = i & ((1 << shift) - 1);
+            if ( toggle && i != 0 ) {
+                mask[i] += mask[i - step - 1];
             }
         }
         localBarrier();
     }
 
     // compactMask
-    for ( int thread = local_id; thread < rowspan; thread += local_size ) {
-        if ( thread == ( rowspan - 1) ) {
-            compactMask[mask[thread]] = thread + 1;
-            totalRuns = runs[workgroup_id] = mask[thread];
+    for ( int i = local_id; i < rowspan; i += local_size ) {
+        if ( i == ( rowspan - 1) ) {
+            compactMask[mask[i]] = i + 1;
+            totalRuns = runs[workgroup_id] = mask[i];
         }
-        if (thread == 0) {
+        if (i == 0) {
             compactMask[0] = 0;
         }
-        else if (mask[thread] != mask[thread - 1]) {
-            compactMask[mask[thread] - 1] = thread;
+        else if (mask[i] != mask[i - 1]) {
+            compactMask[mask[i] - 1] = i;
         }
     }
     localBarrier();
 
     // riempie symbolsOut e countsOut
-    for ( int thread = local_id; thread < rowspan; thread += local_size){
+    for ( int i = local_id; i < rowspan; i += local_size){
 
-        if ( thread < totalRuns ) {
-            const int a = compactMask[thread];
-            const int b = compactMask[thread + 1];
+        if ( i < totalRuns ) {
+            const int a = compactMask[i];
+            const int b = compactMask[i + 1];
 
-            symbolsOut[workgroup_id * rowspan + thread] = source[workgroup_id * rowspan + a];
-            countsOut[workgroup_id * rowspan + thread] = b - a;
+            //symbolsOut[workgroup_id * rowspan + i] = source[workgroup_id * rowspan + a];
+            countsOut[workgroup_id * rowspan + i] = b - a;
         }
     }
     

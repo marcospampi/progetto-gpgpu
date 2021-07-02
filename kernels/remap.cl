@@ -27,8 +27,8 @@ kernel void remap(
     }
     localBarrier();
 
-    for ( int thread = local_id; thread < length; thread += local_size ) {
-        const float src = (float)target[ workgroup_id * rowspan + thread ] - minimum;
+    for ( int i = local_id; i < length; i += local_size ) {
+        const float src = (float)target[ workgroup_id * rowspan + i ] - minimum;
         int count = 
             src <= thresholds.x 
                 ? 1
@@ -39,6 +39,6 @@ kernel void remap(
                         : src <= thresholds.w
                             ? 4
                             : 1;
-        target[ workgroup_id * rowspan + thread ] = count;
+        target[ workgroup_id * rowspan + i ] = count;
     }
 }

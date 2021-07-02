@@ -4,9 +4,10 @@ from numpy.lib.utils import source
 import pyopencl as cl
 from utils import Helper, ProfilingHelper, PictureBuffer, ArrayBuffer
 from decode import decode_ean13
+import argparse
 def extract_step( helper: Helper, source: str, threshold: float ) -> tuple[cl.Event,PictureBuffer]:
     utils = helper.program( "kernels/utils.cl" )
-    sourceImage = helper.picture( source, 'r', resize= (1024,1024)).push()
+    sourceImage = helper.picture( source, 'r').push()
     targetImage = helper.picture( sourceImage.shape, 'rw' )
     print(sourceImage.shape)
     grid = targetImage.shape[:2]
@@ -116,6 +117,10 @@ def unparle_step( helper: Helper, symbolsIn: ArrayBuffer, countsIn: ArrayBuffer,
     return event, results, lengths
 
 if __name__ == '__main__':
+
+    argparser = argparse.ArgumentParser()
+    argparser.add_argument("--image","-i", default="samples/baobab.jpg")
+    image = argparser.parse_args().image
     # context
     ctx = cl.create_some_context()
     
@@ -126,7 +131,7 @@ if __name__ == '__main__':
     helper = Helper( ctx, q )
     helper.printInfo()
 
-    event, pictureResult = extract_step( helper, "samples/baobab.jpg", 0.5)
+    event, pictureResult = extract_step( helper, image, 0.5)
     print("Extract took {0}".format(helper.profile( event ).prettymicro))
 
     event, countsOut, symbolsOut, runs = parle_step(helper, pictureResult)
@@ -155,6 +160,7 @@ if __name__ == '__main__':
             tupled = tuple(data[:length])
             exists = found_map[tupled] if tupled in found_map else 0
             found_map[tupled] = exists + 1
+    
     decoded = [ decode_ean13(i) for i in found_map ]
     decoded = [ i for i in decoded if i is not None]
     print("Trovati {0} codici:".format(len(decoded)))
