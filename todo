@@ -1,11 +1,26 @@
 Fatto:
     Estrazione componente R
     Run-Length
-Da rivedere:
     Riduzione per minimo/massimo
-Non fatto:
     Mappatura corse => moduli
     Impicare il tutto
     Decodifica 
+Da rivedere:
+    Estrazione componente R
+    Run-Length
+    Riduzione per minimo/massimo
+    Mappatura corse => moduli
+
+Non fatto:
+
 Da fare possibilmente:
     Maschera area di decodifica
+
+Note del docente:
+    - Estrazione componente R:
+        usare un kernel trasposto ... row-major -> column-major
+    - Riduzione e mappatura:
+        Usare int al posto di float
+    - Tutti i kernel non imbarazzantemente paralleli e primo kernel
+        Rilassare restrizioni immagine
+        Sliding window con dump in global memory per rilassare restrizioni

@@ -149,8 +149,8 @@ if __name__ == '__main__':
 
     results.pull()
     lengths.pull()
-
-
+    
+    results
     found_count = 0
     found_map = dict()
     
