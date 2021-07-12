@@ -5,8 +5,8 @@ import pyopencl as cl
 from utils import Helper, ProfilingHelper, PictureBuffer, ArrayBuffer
 from decode import decode_ean13
 import argparse
-def extract_step( helper: Helper, source: str, threshold: float ) -> tuple[cl.Event,PictureBuffer]:
-    utils = helper.program( "kernels/utils.cl" )
+def extract_step( helper: Helper, source: str, threshold: float, row_major: bool ) -> tuple[cl.Event,PictureBuffer]:
+    utils = helper.program( "kernels/utils.cl", {'ROW_MAJOR': row_major} )
     sourceImage = helper.picture( source, 'r').push()
     targetImage = helper.picture( sourceImage.shape, 'rw' )
     print(sourceImage.shape)
@@ -120,7 +120,10 @@ if __name__ == '__main__':
 
     argparser = argparse.ArgumentParser()
     argparser.add_argument("--image","-i", default="samples/baobab.jpg")
-    image = argparser.parse_args().image
+    argparser.add_argument("--row-major","-rowM", type=bool, default=False)
+    args = argparser.parse_args()
+    image = args.image
+    row_major = args.row_major
     # context
     ctx = cl.create_some_context()
     
@@ -131,8 +134,9 @@ if __name__ == '__main__':
     helper = Helper( ctx, q )
     helper.printInfo()
 
-    event, pictureResult = extract_step( helper, image, 0.5)
+    event, pictureResult = extract_step( helper, image, 0.5, row_major)
     print("Extract took {0}".format(helper.profile( event ).prettymicro))
+
 
     event, countsOut, symbolsOut, runs = parle_step(helper, pictureResult)
     print("Parle took {0}".format(helper.profile( event ).prettymicro))
@@ -150,17 +154,16 @@ if __name__ == '__main__':
     results.pull()
     lengths.pull()
     
-    results
+    
     found_count = 0
     found_map = dict()
-    
     for i, data in enumerate(results.host):
         length = lengths.host[i]
         if length > 1:
             tupled = tuple(data[:length])
             exists = found_map[tupled] if tupled in found_map else 0
             found_map[tupled] = exists + 1
-    
+    #print(*[ i for i in found_map.items() if len(i[0]) == 97], sep='\n')
     decoded = [ decode_ean13(i) for i in found_map ]
     decoded = [ i for i in decoded if i is not None]
     print("Trovati {0} codici:".format(len(decoded)))

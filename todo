@@ -18,9 +18,9 @@ Da fare possibilmente:
 
 Note del docente:
     - Estrazione componente R:
-        usare un kernel trasposto ... row-major -> column-major
+        usare un kernel trasposto ... row-major -> column-major <OK, a scelta tramite --row-major=True|False>
     - Riduzione e mappatura:
-        Usare int al posto di float
+        Usare int al posto di float <OK>
     - Tutti i kernel non imbarazzantemente paralleli e primo kernel
         Rilassare restrizioni immagine
         Sliding window con dump in global memory per rilassare restrizioni

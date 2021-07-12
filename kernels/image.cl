@@ -87,11 +87,21 @@ kernel void blur_operator(
     #undef load
 }
 
+
+
 kernel void mask(
     global const int * input,
     global const int * source,
     global int * output
 ) {
+    #define ROW_MAJOR iy*nx + ix
+    #define COL_MAJOR ix*ny + iy
+    #if TRUE
+        #define FETCH_MODE ROW_MAJOR
+    #elif
+        #define FETCH_MODE COL_MAJOR
+    #endif
+
     local int count;
     count = 0;
     barrier(CLK_LOCAL_MEM_FENCE);
@@ -100,12 +110,12 @@ kernel void mask(
     const int nx = get_global_size(0);
     const int ny = get_global_size(1);
     
-    const int elem = input[iy*nx + ix];
+    const int elem = input[FETCH_MODE];
     atomic_add(&count, elem < 1 ? 1 : 0);
 
     barrier(CLK_LOCAL_MEM_FENCE);
 
-    output[iy * nx + ix ] = (count < 196 ? source[iy * nx + ix] : 255);
+    output[FETCH_MODE ] = (count < 196 ? source[FETCH_MODE] : 255);
 
     
 }

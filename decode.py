@@ -79,11 +79,13 @@ def decode_ean13( seq: list[int] ) -> tuple[tuple,str]:
     l_digits = list(map(lambda el: el['digit'], l_decoded))
     r_digits = list(map(lambda el: el['digit'], r_decoded))
     
-    check_digit_parital_sum = reduce(lambda x,y: x+y, [ e * ( 1 if i & 1 else 3 ) for i, e in enumerate(l_digits)])
-    check_digit = (10-(check_digit_parital_sum%10))%10
-    
-    if r_digits[-1] != check_digit:
-        return None 
+    #check_digit_parital_sum = reduce(lambda x,y: x+y, [ e * ( 3 if (i+1) & 1 else 1 ) for i, e in enumerate(l_digits) if i < len(l_digits) - 1] )
+    #print(check_digit_parital_sum)
+    #check_digit = (10-(check_digit_parital_sum%10))%10
+    #
+    #if r_digits[-1] != check_digit:
+    #    print(r_digits[-1],check_digit)
+    #    #return None 
 
     result_tuple = tuple([first_digit, *l_digits, *r_digits])
     result_str = ''.join(map(lambda x: str(x), result_tuple))
