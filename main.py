@@ -117,7 +117,6 @@ def unparle_step( helper: Helper, symbolsIn: ArrayBuffer, countsIn: ArrayBuffer,
     return event, results, lengths
 
 if __name__ == '__main__':
-
     argparser = argparse.ArgumentParser()
     argparser.add_argument("--image","-i", default="samples/baobab.jpg")
     argparser.add_argument("--row-major","-rowM", type=bool, default=False)
@@ -130,7 +129,7 @@ if __name__ == '__main__':
     # command queue
     q = cl.CommandQueue( ctx, properties = cl.command_queue_properties.PROFILING_ENABLE )
     
-    # helper santissimo
+    # helper/container
     helper = Helper( ctx, q )
     helper.printInfo()
 

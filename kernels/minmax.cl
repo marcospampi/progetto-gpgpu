@@ -29,18 +29,13 @@ kernel void minmax (
             shift <= rowspan; 
             ++amount, shift = 1 << amount
         ){
-        const int mask = local_id & (( shift )-1); // 1 3 7
-        const int middle = (shift) >> 1; // 1 2 4
+        const int mask = local_id & (( shift )-1);
+        const int middle = (shift) >> 1;
         for ( int i = local_id; i < rowspan && mask == 0; i+=local_size ) {
             scratch[i].y =  max( scratch[i+middle].y, scratch[i].y );
-            //scratch[i].y > scratch[i+middle].y 
-            //    ? scratch[i].y 
-            //    : scratch[i+middle].y;
+
             scratch[i].x =  min( scratch[i+middle].x, scratch[i].x );
 
-            //scratch[i].x = scratch[i].x < scratch[i+middle].x 
-            //    ? scratch[i].x 
-            //    : scratch[i+middle].x;
         }
         localBarrier();
     }
