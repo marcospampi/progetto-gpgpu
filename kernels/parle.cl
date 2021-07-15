@@ -1,7 +1,7 @@
 #define localBarrier()  barrier(CLK_LOCAL_MEM_FENCE);
 /**
  *  Esegue run-length di una riga,
- *  algoritmo di Eric Arnebäck: 
+ *  algoritmo adattato da Eric Arnebäck: 
  *      https://erkaman.github.io/posts/cuda_rle.html
  */
 kernel void parle ( 
@@ -31,7 +31,7 @@ kernel void parle (
         for ( int i = local_id; i < rowspan; i += local_size ) {
             const int toggle = i & (1 << shift);
             const int step = i & ((1 << shift) - 1);
-            if ( toggle && i != 0 ) {
+            if ( toggle ) {
                 mask[i] += mask[i - step - 1];
             }
         }
