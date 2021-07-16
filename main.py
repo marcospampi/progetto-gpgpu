@@ -4,6 +4,7 @@ from numpy.lib.utils import source
 import pyopencl as cl
 from utils import Helper, ProfilingHelper, PictureBuffer, ArrayBuffer
 from decode import decode_ean13
+from json import dumps
 import argparse
 def extract_step( helper: Helper, source: str, threshold: float, row_major: bool ) -> tuple[cl.Event,PictureBuffer]:
     utils = helper.program( "kernels/utils.cl", {'ROW_MAJOR': row_major} )
@@ -120,6 +121,7 @@ if __name__ == '__main__':
     argparser = argparse.ArgumentParser()
     argparser.add_argument("--image","-i", default="samples/baobab.jpg")
     argparser.add_argument("--row-major","-rowM", type=bool, default=False)
+    argparser.add_argument("--json-profile","-jp", type=str, default=None, required=False)
     args = argparser.parse_args()
     image = args.image
     row_major = args.row_major
@@ -133,22 +135,29 @@ if __name__ == '__main__':
     helper = Helper( ctx, q )
     helper.printInfo()
 
+    # timings
+    profile_times = dict()
+
     event, pictureResult = extract_step( helper, image, 0.5, row_major)
     print("Extract took {0}".format(helper.profile( event ).prettymicro))
-
+    profile_times['extract'] = helper.profile( event ).microseconds
 
     event, countsOut, symbolsOut, runs = parle_step(helper, pictureResult)
     print("Parle took {0}".format(helper.profile( event ).prettymicro))
-    
+    profile_times['parle'] = helper.profile( event ).microseconds
+
     event, minmaxs = minmax_step( helper, countsOut, runs )
     print("Minmax took {0}".format(helper.profile( event ).prettymicro))
+    profile_times['minmax'] = helper.profile( event ).microseconds
 
     event = remap_step( helper, countsOut, runs, minmaxs )
     print("Remap took {0}".format(helper.profile( event ).prettymicro))
+    profile_times['remap'] = helper.profile( event ).microseconds
 
 
     event, results, lengths = unparle_step( helper, symbolsOut, countsOut, runs)
     print("Unparle took {0}".format(helper.profile( event ).prettymicro))
+    profile_times['unparle'] = helper.profile( event ).microseconds
 
     results.pull()
     lengths.pull()
@@ -168,3 +177,9 @@ if __name__ == '__main__':
     print("Trovati {0} codici:".format(len(decoded)))
     for e in decoded:
         print(*e)
+    if args.json_profile != None:
+        try:
+            open(args.json_profile, 'w').write(dumps(profile_times))
+        except Exception:
+            print("Cannot write profile times")
+        

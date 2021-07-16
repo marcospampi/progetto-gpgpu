@@ -1,0 +1,722 @@
+[
+    {
+        "file": "1024x1024-ryzen5700u-1.json",
+        "info": {
+            "size": "1024x1024",
+            "device": "ryzen5700u",
+            "test": "1"
+        },
+        "data": {
+            "extract": 1016.086,
+            "parle": 7352.781,
+            "minmax": 5282.468,
+            "remap": 742.452,
+            "unparle": 8928.406
+        }
+    },
+    {
+        "file": "1024x1024-ryzen5700u-2.json",
+        "info": {
+            "size": "1024x1024",
+            "device": "ryzen5700u",
+            "test": "2"
+        },
+        "data": {
+            "extract": 867.206,
+            "parle": 8159.453,
+            "minmax": 5950.451,
+            "remap": 546.144,
+            "unparle": 8839.279
+        }
+    },
+    {
+        "file": "1024x1024-ryzen5700u-3.json",
+        "info": {
+            "size": "1024x1024",
+            "device": "ryzen5700u",
+            "test": "3"
+        },
+        "data": {
+            "extract": 898.676,
+            "parle": 6957.168,
+            "minmax": 6342.196,
+            "remap": 335.129,
+            "unparle": 11926.419
+        }
+    },
+    {
+        "file": "1024x1024-ryzen5700u-4.json",
+        "info": {
+            "size": "1024x1024",
+            "device": "ryzen5700u",
+            "test": "4"
+        },
+        "data": {
+            "extract": 968.988,
+            "parle": 6955.525,
+            "minmax": 5264.794,
+            "remap": 885.591,
+            "unparle": 8133.225
+        }
+    },
+    {
+        "file": "1024x1024-ryzen5700u-5.json",
+        "info": {
+            "size": "1024x1024",
+            "device": "ryzen5700u",
+            "test": "5"
+        },
+        "data": {
+            "extract": 904.557,
+            "parle": 6524.527,
+            "minmax": 6433.487,
+            "remap": 593.403,
+            "unparle": 8506.334
+        }
+    },
+    {
+        "file": "1024x1024-ryzen5700u-6.json",
+        "info": {
+            "size": "1024x1024",
+            "device": "ryzen5700u",
+            "test": "6"
+        },
+        "data": {
+            "extract": 1377.213,
+            "parle": 7561.212,
+            "minmax": 4562.948,
+            "remap": 398.377,
+            "unparle": 10516.455
+        }
+    },
+    {
+        "file": "1024x1024-ryzen5700u-7.json",
+        "info": {
+            "size": "1024x1024",
+            "device": "ryzen5700u",
+            "test": "7"
+        },
+        "data": {
+            "extract": 1005.406,
+            "parle": 6709.955,
+            "minmax": 5485.95,
+            "remap": 677.391,
+            "unparle": 8159.945
+        }
+    },
+    {
+        "file": "1024x1024-ryzen5700u-8.json",
+        "info": {
+            "size": "1024x1024",
+            "device": "ryzen5700u",
+            "test": "8"
+        },
+        "data": {
+            "extract": 950.132,
+            "parle": 7275.926,
+            "minmax": 6016.544,
+            "remap": 685.887,
+            "unparle": 10584.993
+        }
+    },
+    {
+        "file": "1024x1024-vega8-1.json",
+        "info": {
+            "size": "1024x1024",
+            "device": "vega8",
+            "test": "1"
+        },
+        "data": {
+            "extract": 287.42,
+            "parle": 217.088,
+            "minmax": 329.099,
+            "remap": 25.287,
+            "unparle": 357.832
+        }
+    },
+    {
+        "file": "1024x1024-vega8-2.json",
+        "info": {
+            "size": "1024x1024",
+            "device": "vega8",
+            "test": "2"
+        },
+        "data": {
+            "extract": 443.795,
+            "parle": 696.389,
+            "minmax": 330.422,
+            "remap": 34.224,
+            "unparle": 608.705
+        }
+    },
+    {
+        "file": "1024x1024-vega8-3.json",
+        "info": {
+            "size": "1024x1024",
+            "device": "vega8",
+            "test": "3"
+        },
+        "data": {
+            "extract": 331.865,
+            "parle": 207.39,
+            "minmax": 329.179,
+            "remap": 25.488,
+            "unparle": 324.691
+        }
+    },
+    {
+        "file": "1024x1024-vega8-4.json",
+        "info": {
+            "size": "1024x1024",
+            "device": "vega8",
+            "test": "4"
+        },
+        "data": {
+            "extract": 312.387,
+            "parle": 214.443,
+            "minmax": 328.978,
+            "remap": 25.969,
+            "unparle": 331.102
+        }
+    },
+    {
+        "file": "1024x1024-vega8-5.json",
+        "info": {
+            "size": "1024x1024",
+            "device": "vega8",
+            "test": "5"
+        },
+        "data": {
+            "extract": 277.481,
+            "parle": 366.289,
+            "minmax": 348.535,
+            "remap": 25.568,
+            "unparle": 331.143
+        }
+    },
+    {
+        "file": "1024x1024-vega8-6.json",
+        "info": {
+            "size": "1024x1024",
+            "device": "vega8",
+            "test": "6"
+        },
+        "data": {
+            "extract": 295.115,
+            "parle": 304.813,
+            "minmax": 328.939,
+            "remap": 30.658,
+            "unparle": 328.698
+        }
+    },
+    {
+        "file": "1024x1024-vega8-7.json",
+        "info": {
+            "size": "1024x1024",
+            "device": "vega8",
+            "test": "7"
+        },
+        "data": {
+            "extract": 246.706,
+            "parle": 211.719,
+            "minmax": 358.837,
+            "remap": 388.532,
+            "unparle": 400.835
+        }
+    },
+    {
+        "file": "1024x1024-vega8-8.json",
+        "info": {
+            "size": "1024x1024",
+            "device": "vega8",
+            "test": "8"
+        },
+        "data": {
+            "extract": 278.002,
+            "parle": 211.638,
+            "minmax": 324.931,
+            "remap": 24.365,
+            "unparle": 331.102
+        }
+    },
+    {
+        "file": "4000x3000-ryzen5700u-1.json",
+        "info": {
+            "size": "4000x3000",
+            "device": "ryzen5700u",
+            "test": "1"
+        },
+        "data": {
+            "extract": 8009.652,
+            "parle": 58997.154,
+            "minmax": 52018.725,
+            "remap": 2257.725,
+            "unparle": 100612.165
+        }
+    },
+    {
+        "file": "4000x3000-ryzen5700u-2.json",
+        "info": {
+            "size": "4000x3000",
+            "device": "ryzen5700u",
+            "test": "2"
+        },
+        "data": {
+            "extract": 7965.81,
+            "parle": 59539.901,
+            "minmax": 52300.013,
+            "remap": 2441.789,
+            "unparle": 93326.3
+        }
+    },
+    {
+        "file": "4000x3000-ryzen5700u-3.json",
+        "info": {
+            "size": "4000x3000",
+            "device": "ryzen5700u",
+            "test": "3"
+        },
+        "data": {
+            "extract": 7628.117,
+            "parle": 54523.423,
+            "minmax": 48829.563,
+            "remap": 2247.174,
+            "unparle": 86066.484
+        }
+    },
+    {
+        "file": "4000x3000-ryzen5700u-4.json",
+        "info": {
+            "size": "4000x3000",
+            "device": "ryzen5700u",
+            "test": "4"
+        },
+        "data": {
+            "extract": 7505.567,
+            "parle": 59786.363,
+            "minmax": 52580.899,
+            "remap": 2687.39,
+            "unparle": 95560.801
+        }
+    },
+    {
+        "file": "4000x3000-ryzen5700u-5.json",
+        "info": {
+            "size": "4000x3000",
+            "device": "ryzen5700u",
+            "test": "5"
+        },
+        "data": {
+            "extract": 7993.322,
+            "parle": 59753.693,
+            "minmax": 52519.084,
+            "remap": 2331.964,
+            "unparle": 90218.501
+        }
+    },
+    {
+        "file": "4000x3000-ryzen5700u-6.json",
+        "info": {
+            "size": "4000x3000",
+            "device": "ryzen5700u",
+            "test": "6"
+        },
+        "data": {
+            "extract": 7722.143,
+            "parle": 56348.356,
+            "minmax": 49476.958,
+            "remap": 2268.134,
+            "unparle": 101026.322
+        }
+    },
+    {
+        "file": "4000x3000-ryzen5700u-7.json",
+        "info": {
+            "size": "4000x3000",
+            "device": "ryzen5700u",
+            "test": "7"
+        },
+        "data": {
+            "extract": 7462.777,
+            "parle": 60832.766,
+            "minmax": 54971.954,
+            "remap": 2616.388,
+            "unparle": 99773.702
+        }
+    },
+    {
+        "file": "4000x3000-ryzen5700u-8.json",
+        "info": {
+            "size": "4000x3000",
+            "device": "ryzen5700u",
+            "test": "8"
+        },
+        "data": {
+            "extract": 8120.25,
+            "parle": 60570.344,
+            "minmax": 53697.814,
+            "remap": 2230.484,
+            "unparle": 103735.232
+        }
+    },
+    {
+        "file": "4000x3000-vega8-1.json",
+        "info": {
+            "size": "4000x3000",
+            "device": "vega8",
+            "test": "1"
+        },
+        "data": {
+            "extract": 5473.499,
+            "parle": 11739.803,
+            "minmax": 5745.648,
+            "remap": 498.935,
+            "unparle": 11252.89
+        }
+    },
+    {
+        "file": "4000x3000-vega8-2.json",
+        "info": {
+            "size": "4000x3000",
+            "device": "vega8",
+            "test": "2"
+        },
+        "data": {
+            "extract": 3666.873,
+            "parle": 6283.979,
+            "minmax": 5480.593,
+            "remap": 126.277,
+            "unparle": 11674.441
+        }
+    },
+    {
+        "file": "4000x3000-vega8-3.json",
+        "info": {
+            "size": "4000x3000",
+            "device": "vega8",
+            "test": "3"
+        },
+        "data": {
+            "extract": 6694.749,
+            "parle": 7560.611,
+            "minmax": 7858.65,
+            "remap": 96.541,
+            "unparle": 14727.043
+        }
+    },
+    {
+        "file": "4000x3000-vega8-4.json",
+        "info": {
+            "size": "4000x3000",
+            "device": "vega8",
+            "test": "4"
+        },
+        "data": {
+            "extract": 3408.429,
+            "parle": 6917.006,
+            "minmax": 8462.904,
+            "remap": 110.968,
+            "unparle": 14460.745
+        }
+    },
+    {
+        "file": "4000x3000-vega8-5.json",
+        "info": {
+            "size": "4000x3000",
+            "device": "vega8",
+            "test": "5"
+        },
+        "data": {
+            "extract": 4494.063,
+            "parle": 6951.549,
+            "minmax": 5414.388,
+            "remap": 228.388,
+            "unparle": 11379.529
+        }
+    },
+    {
+        "file": "4000x3000-vega8-6.json",
+        "info": {
+            "size": "4000x3000",
+            "device": "vega8",
+            "test": "6"
+        },
+        "data": {
+            "extract": 4122.455,
+            "parle": 6161.761,
+            "minmax": 5310.794,
+            "remap": 92.774,
+            "unparle": 9689.721
+        }
+    },
+    {
+        "file": "4000x3000-vega8-7.json",
+        "info": {
+            "size": "4000x3000",
+            "device": "vega8",
+            "test": "7"
+        },
+        "data": {
+            "extract": 5146.01,
+            "parle": 8259.519,
+            "minmax": 6676.473,
+            "remap": 96.741,
+            "unparle": 12060.242
+        }
+    },
+    {
+        "file": "4000x3000-vega8-8.json",
+        "info": {
+            "size": "4000x3000",
+            "device": "vega8",
+            "test": "8"
+        },
+        "data": {
+            "extract": 3324.875,
+            "parle": 6815.541,
+            "minmax": 5344.583,
+            "remap": 159.379,
+            "unparle": 10139.414
+        }
+    },
+    {
+        "file": "512x512-ryzen5700u-1.json",
+        "info": {
+            "size": "512x512",
+            "device": "ryzen5700u",
+            "test": "1"
+        },
+        "data": {
+            "extract": 219.341,
+            "parle": 1431.836,
+            "minmax": 1061.11,
+            "remap": 277.951,
+            "unparle": 3609.92
+        }
+    },
+    {
+        "file": "512x512-ryzen5700u-2.json",
+        "info": {
+            "size": "512x512",
+            "device": "ryzen5700u",
+            "test": "2"
+        },
+        "data": {
+            "extract": 260.218,
+            "parle": 1667.648,
+            "minmax": 1588.399,
+            "remap": 116.588,
+            "unparle": 2880.082
+        }
+    },
+    {
+        "file": "512x512-ryzen5700u-3.json",
+        "info": {
+            "size": "512x512",
+            "device": "ryzen5700u",
+            "test": "3"
+        },
+        "data": {
+            "extract": 334.577,
+            "parle": 1515.473,
+            "minmax": 1947.633,
+            "remap": 176.37,
+            "unparle": 2906.07
+        }
+    },
+    {
+        "file": "512x512-ryzen5700u-4.json",
+        "info": {
+            "size": "512x512",
+            "device": "ryzen5700u",
+            "test": "4"
+        },
+        "data": {
+            "extract": 424.697,
+            "parle": 1736.738,
+            "minmax": 2268.054,
+            "remap": 206.959,
+            "unparle": 3609.57
+        }
+    },
+    {
+        "file": "512x512-ryzen5700u-5.json",
+        "info": {
+            "size": "512x512",
+            "device": "ryzen5700u",
+            "test": "5"
+        },
+        "data": {
+            "extract": 275.006,
+            "parle": 1892.269,
+            "minmax": 2183.465,
+            "remap": 140.664,
+            "unparle": 2375.064
+        }
+    },
+    {
+        "file": "512x512-ryzen5700u-6.json",
+        "info": {
+            "size": "512x512",
+            "device": "ryzen5700u",
+            "test": "6"
+        },
+        "data": {
+            "extract": 332.674,
+            "parle": 2053.071,
+            "minmax": 1865.359,
+            "remap": 144.902,
+            "unparle": 3002.191
+        }
+    },
+    {
+        "file": "512x512-ryzen5700u-7.json",
+        "info": {
+            "size": "512x512",
+            "device": "ryzen5700u",
+            "test": "7"
+        },
+        "data": {
+            "extract": 361.898,
+            "parle": 1949.025,
+            "minmax": 1997.696,
+            "remap": 240.622,
+            "unparle": 2338.656
+        }
+    },
+    {
+        "file": "512x512-ryzen5700u-8.json",
+        "info": {
+            "size": "512x512",
+            "device": "ryzen5700u",
+            "test": "8"
+        },
+        "data": {
+            "extract": 557.746,
+            "parle": 2426.862,
+            "minmax": 1924.088,
+            "remap": 96.902,
+            "unparle": 3618.467
+        }
+    },
+    {
+        "file": "512x512-vega8-1.json",
+        "info": {
+            "size": "512x512",
+            "device": "vega8",
+            "test": "1"
+        },
+        "data": {
+            "extract": 85.881,
+            "parle": 145.512,
+            "minmax": 422.271,
+            "remap": 16.791,
+            "unparle": 389.73
+        }
+    },
+    {
+        "file": "512x512-vega8-2.json",
+        "info": {
+            "size": "512x512",
+            "device": "vega8",
+            "test": "2"
+        },
+        "data": {
+            "extract": 58.911,
+            "parle": 64.921,
+            "minmax": 87.645,
+            "remap": 18.395,
+            "unparle": 127.398
+        }
+    },
+    {
+        "file": "512x512-vega8-3.json",
+        "info": {
+            "size": "512x512",
+            "device": "vega8",
+            "test": "3"
+        },
+        "data": {
+            "extract": 59.031,
+            "parle": 56.065,
+            "minmax": 89.367,
+            "remap": 18.154,
+            "unparle": 93.536
+        }
+    },
+    {
+        "file": "512x512-vega8-4.json",
+        "info": {
+            "size": "512x512",
+            "device": "vega8",
+            "test": "4"
+        },
+        "data": {
+            "extract": 57.908,
+            "parle": 63.92,
+            "minmax": 125.475,
+            "remap": 46.447,
+            "unparle": 105.076
+        }
+    },
+    {
+        "file": "512x512-vega8-5.json",
+        "info": {
+            "size": "512x512",
+            "device": "vega8",
+            "test": "5"
+        },
+        "data": {
+            "extract": 66.325,
+            "parle": 71.094,
+            "minmax": 87.604,
+            "remap": 18.234,
+            "unparle": 92.253
+        }
+    },
+    {
+        "file": "512x512-vega8-6.json",
+        "info": {
+            "size": "512x512",
+            "device": "vega8",
+            "test": "6"
+        },
+        "data": {
+            "extract": 71.614,
+            "parle": 100.389,
+            "minmax": 114.736,
+            "remap": 18.956,
+            "unparle": 95.5
+        }
+    },
+    {
+        "file": "512x512-vega8-7.json",
+        "info": {
+            "size": "512x512",
+            "device": "vega8",
+            "test": "7"
+        },
+        "data": {
+            "extract": 64.761,
+            "parle": 90.77,
+            "minmax": 753.782,
+            "remap": 18.034,
+            "unparle": 94.016
+        }
+    },
+    {
+        "file": "512x512-vega8-8.json",
+        "info": {
+            "size": "512x512",
+            "device": "vega8",
+            "test": "8"
+        },
+        "data": {
+            "extract": 74.139,
+            "parle": 69.17,
+            "minmax": 88.326,
+            "remap": 14.146,
+            "unparle": 143.189
+        }
+    }
+]
