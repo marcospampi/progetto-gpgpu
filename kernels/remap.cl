@@ -29,16 +29,21 @@ kernel void remap(
 
     for ( int i = local_id; i < length; i += local_size ) {
         const int src = target[ workgroup_id * rowspan + i ] - minimum;
-        int count = 
-            src <= thresholds.x 
+        int count;
+        if ( i == 0 || i == length - 1 )
+            count = 1;
+        else 
+        count = 
+            src < thresholds.x 
                 ? 1
-                : src <= thresholds.y
+                : src < thresholds.y
                     ? 2
-                    : src <= thresholds.z
+                    : src < thresholds.z
                         ? 3
                         : src <= thresholds.w
                             ? 4
                             : 1;
+        
         target[ workgroup_id * rowspan + i ] = count;
     }
 }

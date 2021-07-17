@@ -3,7 +3,8 @@ from numpy.core.defchararray import count
 from numpy.lib.utils import source
 import pyopencl as cl
 from utils import Helper, ProfilingHelper, PictureBuffer, ArrayBuffer
-from decode import decode_ean13
+from decoders.code128 import decode_code128
+from decoders.ean13 import decode_ean13
 from json import dumps
 import argparse
 def extract_step( helper: Helper, source: str, threshold: float, row_major: bool ) -> tuple[cl.Event,PictureBuffer]:
@@ -171,8 +172,18 @@ if __name__ == '__main__':
             tupled = tuple(data[:length])
             exists = found_map[tupled] if tupled in found_map else 0
             found_map[tupled] = exists + 1
+    #print(*found_map.items(), sep='\n')
     #print(*[ i for i in found_map.items() if len(i[0]) == 97], sep='\n')
-    decoded = [ decode_ean13(i) for i in found_map ]
+    decoded = [  ]
+    for key in found_map:
+        tests = [
+            decode_code128(key),
+            decode_ean13(key)
+        ]
+        for i in tests:
+            if i != None:
+                decoded.append(i)
+
     decoded = [ i for i in decoded if i is not None]
     print("Trovati {0} codici:".format(len(decoded)))
     for e in decoded:
