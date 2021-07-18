@@ -59,11 +59,13 @@ def verify_checkdigit( seq: list[int]):
 
 def decode_ean13( seq: list[int] ) -> tuple[tuple,str]:
     if len(seq) != 97:
+        #print("sbagghiau", len(seq))
         return None
     l_marker = tuple(seq[1:4])
     r_marker = tuple(seq[len(seq)-4:][:3])
     m_marker = tuple(seq[4+7*6:][:5])
     if not (l_marker == r_marker and m_marker == (0,1,0,1,0)):
+
         return None
 
     l_part = np.array(seq[4:][:42])

@@ -1,0 +1,8 @@
+Took 22798 µs
+Took 23173 µs
+Took 24984 µs
+Took 23596 µs
+Took 23252 µs
+Took 22799 µs
+Took 23245 µs
+Took 23164 µs

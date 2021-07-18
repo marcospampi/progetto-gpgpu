@@ -12,13 +12,17 @@ if __name__ == '__main__':
 
     with open(filename) as file:
         for row in file.readlines():
-            row = row.split(' ')[:-1]
-            row = tuple(map(lambda e: int(e), row))
+            row = row.split(' ')
+            try:
+                row = tuple(map(lambda e: int(e), row))
+            except:
+                continue
             count = seqs[row] if row in seqs else 0
             seqs[row] = count + 1
     decoded = [  ]
 
-    for key in seqs:
+    for key, counts in seqs.items():
+        
         tests = [
             decode_code128(key),
             decode_ean13(key)

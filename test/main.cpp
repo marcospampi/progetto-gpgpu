@@ -69,23 +69,26 @@ int main ( int argc, char **argv ) {
 }
 
 long long execute( int NUM_THREADS, std::string source, std::optional<std::string> output ) {
+
     auto rowsMonitor = Monitor(std::queue<std::span<int>>());
     auto outputMonitor = Monitor(std::vector<std::vector<int>>());
 
     auto threads = std::vector<std::thread>();
 
     auto image = Image(source);
-    
+        auto start = std::chrono::high_resolution_clock::now();
+
+    rowsMonitor.unsafeLock();
+
     for ( int i = 0, l = image.getHeight(); i < l; ++i  )
         rowsMonitor.unsafe().push( image[i] );
     
-    auto start = std::chrono::high_resolution_clock::now();
-
     for ( int  i = 0 ; i < NUM_THREADS; ++i ) {
         // logica thread
         auto thread = std::thread([&rowsMonitor, &outputMonitor, i]() {
             int count = 0;
             std::optional<std::span<int>> _input;
+            
             while ( _input = front_and_pop(rowsMonitor)) {
                 count ++;
                 auto input = std::vector<int>( );
@@ -94,17 +97,14 @@ long long execute( int NUM_THREADS, std::string source, std::optional<std::strin
                 }
 
                 auto runs = std::vector<int>( ); {
-                    int current = input[0];
                     int run = 1;
                     for ( int i = 1, size = input.size() ; i < size; ++i ) {
-                        if ( input[i] == input[i-1]) {
+                        while ( i < size-1 && input[i] == input[i+1]  ) {
                             run++;
+                            i++;
                         }
-                        else {
-                            runs.push_back( run );
-                            run = 1;
-                            current = input[i];
-                        }
+                        runs.push_back(run);
+                        run = 1;
                     }
                 }
                 // normalizza
@@ -128,9 +128,11 @@ long long execute( int NUM_THREADS, std::string source, std::optional<std::strin
                                         ? 2
                                         : el < 1 + rif / 4 + rif / 2
                                             ? 3
-                                            : el <= rif
+                                            : el <= 1 + rif
                                                 ? 4
                                                 : 1; 
+                            //std::cout << i << ':' << runs[i] << ':' << el << ' ';
+
                             runs[i] = el;
                         }
                     }
@@ -138,9 +140,12 @@ long long execute( int NUM_THREADS, std::string source, std::optional<std::strin
                 auto output = std::vector<int>(  );
                 
                 for ( int i = 0, size = runs.size(); i < size; ++i ) {
-                    for ( int j = 0, _size = runs[i]; j < _size; ++ j)
-                        output.push_back( i & 1);
+                    int run = runs[i];
+                    int value = i & 1;
+                    for ( int j = 0; j < run; ++j )
+                        output.push_back(value);
                 }
+                //std::cout << '\n';
                 outputMonitor->push_back( std::move(output));
 
 
@@ -150,7 +155,7 @@ long long execute( int NUM_THREADS, std::string source, std::optional<std::strin
         threads.push_back( std::move( thread )); 
     }
 
-
+    rowsMonitor.unsafeRelease();
     for ( auto &t : threads ) t.join();
 	auto end = std::chrono::high_resolution_clock::now();
     

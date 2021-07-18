@@ -31,8 +31,11 @@ def calculate_checksum( startcode: int, seq: list[int])->bool:
     for i,e in enumerate(seq[:-1]):
         products = products + ( e * ( i + 1 ) )
     checksum = startcode + products
-
-    return (checksum % 103) ==  seq[-1] + 1 
+    try:
+        checksum = (checksum % 103) ==  seq[-1] + 1
+        return True
+    except:
+        return False
 
 def decode_code128(seq: tuple):
     seq = seq[1:-1]
