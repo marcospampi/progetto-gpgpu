@@ -1,8 +1,0 @@
-Took 3536 µs
-Took 3448 µs
-Took 4175 µs
-Took 3886 µs
-Took 4201 µs
-Took 3892 µs
-Took 4118 µs
-Took 3785 µs

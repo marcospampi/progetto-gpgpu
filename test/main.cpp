@@ -122,13 +122,13 @@ long long execute( int NUM_THREADS, std::string source, std::optional<std::strin
                         else {
                             auto el = runs[i] - min ;
                             el = 
-                                el < 1 + rif / 4
+                                el <= rif / 4
                                     ? 1
-                                    : el < 1 + rif / 2
+                                    : el <= rif / 2
                                         ? 2
-                                        : el < 1 + rif / 4 + rif / 2
+                                        : el <= rif / 4 + rif / 2
                                             ? 3
-                                            : el <= 1 + rif
+                                            : el <= rif
                                                 ? 4
                                                 : 1; 
                             //std::cout << i << ':' << runs[i] << ':' << el << ' ';

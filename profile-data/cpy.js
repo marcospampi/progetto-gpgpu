@@ -1,1 +1,0 @@
-test_portatile = fs.readdirSync('.').map(e => ({file:e, info: e.match(/(?<size>\d+x\d+)\-(?<device>[a-z0-9]+)\-(?<test>(\d))/i)?.groups})).map(e => ({...e, data: JSON.parse(fs.readFileSync(e.file,'utf-8'))}))

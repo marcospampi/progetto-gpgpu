@@ -56,7 +56,9 @@ def verify_checkdigit( seq ):
             sum = sum + e * 1
         else:
             sum = sum + e * 3
-    return sum % 10 == expected
+    
+    check_digit = 10 - (sum % 10) == expected
+    return check_digit
 
 #def decode_ean13( seq: list[int] ) -> tuple[tuple,str]:
 def decode_ean13( seq ):
@@ -96,8 +98,8 @@ def decode_ean13( seq ):
     
 
     result_tuple = tuple([first_digit, *l_digits, *r_digits])
-    #if verify_checkdigit(result_tuple) == False:
-    #    return None
+    if verify_checkdigit(result_tuple) == False:
+        return None
     result_str = ''.join(map(lambda x: str(x), result_tuple))
     return result_str, result_tuple
 

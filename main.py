@@ -129,7 +129,7 @@ def unparle_step( helper, symbolsIn, countsIn, runs):
 
 if __name__ == '__main__':
     argparser = argparse.ArgumentParser()
-    argparser.add_argument("--image","-i", default="samples/baobab.jpg")
+    argparser.add_argument("--image","-i", default="samples/zucchero.jpg")
     argparser.add_argument("--row-major","-rowM", type=bool, default=False)
     argparser.add_argument("--json-profile","-jp", type=str, default=None, required=False)
     args = argparser.parse_args()
@@ -181,8 +181,7 @@ if __name__ == '__main__':
             tupled = tuple(data[:length])
             exists = found_map[tupled] if tupled in found_map else 0
             found_map[tupled] = exists + 1
-    print(*found_map.items(), sep='\n')
-    #print(*[ i for i in found_map.items() if len(i[0]) == 97], sep='\n')
+   
     decoded = [  ]
     for key in found_map:
         tests = [
@@ -194,6 +193,11 @@ if __name__ == '__main__':
                 decoded.append(i)
 
     decoded = [ i for i in decoded if i is not None]
+
+    totalTime = 0
+    for i in profile_times.values():
+        totalTime = totalTime + i
+    print(f"\nTempo totale kernel: {totalTime:f}\n")
     print("Trovati {0} codici:".format(len(decoded)))
     for e in decoded:
         print(*e)
