@@ -19,7 +19,9 @@ kernel void unparle(
     const int workgroup_id = get_global_id(0);
     const int local_id = get_local_id(1);
     const int local_size = get_local_size(1);
-
+    const int vrowspan = rowspan == local_size 
+                                            ? rowspan
+                                            : ( rowspan | (local_size - 1)) + 1;
     /* clear scratch_a and scratch_b */
     for ( int i = local_id; i < rowspan; i += local_size ) {
         scratch_a[i] = scratch_b[i] = 0;
@@ -36,7 +38,7 @@ kernel void unparle(
             target[i] = i < run ? countsIn[workgroup_id * rowspan + i] : 0;
         }
         /** inclusive prefix scan of target/scratch a */
-        for ( int shift = 0; (1 << shift) < rowspan; ++shift ) {
+        for ( int shift = 0; (1 << shift) < vrowspan; ++shift ) {
             for ( int i = local_id; i < rowspan; i += local_size ) {
                 const int toggle = i & (1 << shift);
                 const int step = i & ((1 << shift) - 1);

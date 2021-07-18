@@ -10,6 +10,9 @@ kernel void minmax (
     const int workgroup_id = get_global_id(0);
     const int local_id = get_local_id(1);
     const int local_size = get_local_size(1);
+    const int vrowspan = rowspan == local_size 
+                                          ? rowspan
+                                          : rowspan + ( local_size - (rowspan & (local_size-1)));
     
     if ( local_id == 0 ){
         length = runs[workgroup_id];
@@ -26,7 +29,7 @@ kernel void minmax (
 
     for ( 
             int amount = 1, shift = 1 << amount; 
-            shift <= rowspan; 
+            shift <= vrowspan; 
             ++amount, shift = 1 << amount
         ){
         const int mask = local_id & (( shift )-1);
