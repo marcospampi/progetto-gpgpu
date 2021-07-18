@@ -45,7 +45,8 @@ ean13_first_digit_map = {
     ('L','G','L','G','G','L'): 8,
     ('L','G','G','L','G','L'): 9
 }
-def verify_checkdigit( seq: list[int]):
+#def verify_checkdigit( seq: list[int]):
+def verify_checkdigit( seq ):
     expected = seq[-1]
     seq = seq[:-1]
 
@@ -57,15 +58,15 @@ def verify_checkdigit( seq: list[int]):
             sum = sum + e * 3
     return sum % 10 == expected
 
-def decode_ean13( seq: list[int] ) -> tuple[tuple,str]:
+#def decode_ean13( seq: list[int] ) -> tuple[tuple,str]:
+def decode_ean13( seq ):
+
     if len(seq) != 97:
-        #print("sbagghiau", len(seq))
         return None
     l_marker = tuple(seq[1:4])
     r_marker = tuple(seq[len(seq)-4:][:3])
     m_marker = tuple(seq[4+7*6:][:5])
     if not (l_marker == r_marker and m_marker == (0,1,0,1,0)):
-
         return None
 
     l_part = np.array(seq[4:][:42])
@@ -95,8 +96,8 @@ def decode_ean13( seq: list[int] ) -> tuple[tuple,str]:
     
 
     result_tuple = tuple([first_digit, *l_digits, *r_digits])
-    if verify_checkdigit(result_tuple) == False:
-        return None
+    #if verify_checkdigit(result_tuple) == False:
+    #    return None
     result_str = ''.join(map(lambda x: str(x), result_tuple))
     return result_str, result_tuple
 

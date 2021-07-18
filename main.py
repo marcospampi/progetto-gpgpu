@@ -7,7 +7,9 @@ from decoders.code128 import decode_code128
 from decoders.ean13 import decode_ean13
 from json import dumps
 import argparse
-def extract_step( helper: Helper, source: str, threshold: float, row_major: bool ) -> tuple[cl.Event,PictureBuffer]:
+
+#def extract_step( helper: Helper, source: str, threshold: float, row_major: bool ) -> tuple[cl.Event,PictureBuffer]:
+def extract_step( helper, source, threshold, row_major ):
     utils = helper.program( "kernels/utils.cl", {'ROW_MAJOR': row_major} )
     sourceImage = helper.picture( source, 'r').push()
     targetImage = helper.picture( sourceImage.shape, 'rw' )
@@ -23,7 +25,9 @@ def extract_step( helper: Helper, source: str, threshold: float, row_major: bool
 
     return event, targetImage
 
-def parle_step( helper: Helper, source: PictureBuffer ) -> tuple[cl.Event, ArrayBuffer, ArrayBuffer, ArrayBuffer]:
+#def parle_step( helper: Helper, source: PictureBuffer ) -> tuple[cl.Event, ArrayBuffer, ArrayBuffer, ArrayBuffer]:
+def parle_step( helper, source ):
+
     parle = helper.program("kernels/parle.cl").parle
 
 
@@ -52,7 +56,9 @@ def parle_step( helper: Helper, source: PictureBuffer ) -> tuple[cl.Event, Array
 
     return event, countsOut, symbolsOut, runs
     
-def minmax_step( helper: Helper, source: ArrayBuffer, runs: ArrayBuffer ) -> tuple[cl.Event, ArrayBuffer]:
+#def minmax_step( helper: Helper, source: ArrayBuffer, runs: ArrayBuffer ) -> tuple[cl.Event, ArrayBuffer]:
+def minmax_step( helper, source, runs ):
+
     target = helper.array( np.zeros((source.shape[0],2), dtype=np.int32) , 'rw' )
     minmax = helper.program("kernels/minmax.cl").minmax
 
@@ -74,7 +80,9 @@ def minmax_step( helper: Helper, source: ArrayBuffer, runs: ArrayBuffer ) -> tup
 
     return event, target
 
-def remap_step( helper: Helper, target: ArrayBuffer, runs: ArrayBuffer, minmaxs: ArrayBuffer) -> cl.Event:
+#def remap_step( helper: Helper, target: ArrayBuffer, runs: ArrayBuffer, minmaxs: ArrayBuffer) -> cl.Event:
+def remap_step( helper, target, runs, minmaxs):
+
     remap = helper.program("kernels/remap.cl").remap
     
     grid_on_y = helper.bigButNoTooBig(target.shape[1])
@@ -93,7 +101,8 @@ def remap_step( helper: Helper, target: ArrayBuffer, runs: ArrayBuffer, minmaxs:
 
     return event
 
-def unparle_step( helper: Helper, symbolsIn: ArrayBuffer, countsIn: ArrayBuffer, runs: ArrayBuffer) -> tuple[cl.Event, ArrayBuffer, ArrayBuffer]:
+#def unparle_step( helper: Helper, symbolsIn: ArrayBuffer, countsIn: ArrayBuffer, runs: ArrayBuffer) -> tuple[cl.Event, ArrayBuffer, ArrayBuffer]:
+def unparle_step( helper, symbolsIn, countsIn, runs):
     unparle = helper.program("kernels/unparle.cl").unparle
 
     grid_on_y = helper.bigButNoTooBig(symbolsIn.shape[1])

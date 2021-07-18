@@ -25,7 +25,9 @@ def __init__():
         code_table.append(entry)
 __init__()
 
-def calculate_checksum( startcode: int, seq: list[int])->bool:
+#non funziona con python 3.8
+#def calculate_checksum( startcode: int, seq: list[int])->bool:
+def calculate_checksum( startcode, seq):
     products = 1
 
     for i,e in enumerate(seq[:-1]):
