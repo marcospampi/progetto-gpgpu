@@ -132,6 +132,7 @@ if __name__ == '__main__':
     argparser.add_argument("--image","-i", default="samples/zucchero.jpg")
     argparser.add_argument("--row-major","-rowM", type=bool, default=False)
     argparser.add_argument("--json-profile","-jp", type=str, default=None, required=False)
+    argparser.add_argument("--preferred-wg-size","-wg", type=int, required=False, default=None)
     args = argparser.parse_args()
     image = args.image
     row_major = args.row_major
@@ -143,6 +144,7 @@ if __name__ == '__main__':
     
     # helper/container
     helper = Helper( ctx, q )
+    helper.set_preferred_wg_size(args.preferred_wg_size)
     helper.printInfo()
 
     # timings

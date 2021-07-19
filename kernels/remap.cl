@@ -32,11 +32,13 @@ kernel void remap(
     for ( int i = local_id; i < length; i += local_size ) {
         const float src = target[ workgroup_id * rowspan + i ] - minimum ;
         float count;
-        if ( i == 0 || i == length - 1 )
-            count = 1;
-        else 
+        //if ( i == 0 || i == length - 1 )
+        //    count = 1;
+        //else 
         count = 
-            src <= thresholds.x 
+            i == 0 || i == length - 1
+            ? 1
+            : src <= thresholds.x 
                 ? 1
                 : src <= thresholds.y
                     ? 2
