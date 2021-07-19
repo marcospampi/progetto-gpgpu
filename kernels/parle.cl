@@ -1,9 +1,23 @@
-#define localBarrier()  barrier(CLK_LOCAL_MEM_FENCE);
 /**
  *  Esegue run-length di una riga,
  *  algoritmo adattato da Eric Arnebäck: 
  *      https://erkaman.github.io/posts/cuda_rle.html
  */
+
+#define localBarrier()  barrier(CLK_LOCAL_MEM_FENCE);
+
+/**
+ * Code-128 può avere la codifica più corta, consistente in:
+ * 1 + 7 + 7 + 7 + 8 + 1 = 31 run
+ * q   s   A   c   e   q
+ * q: quiet zone
+ * s: simbolo start
+ * A: simbolo qualsiasi
+ * c: checkdigit
+ * e: simbolo end
+*/
+#define MIN_SEQ_LEN 31
+
 kernel void parle ( 
     const int rowspan,
     global const int * restrict source, 
@@ -20,12 +34,15 @@ kernel void parle (
     const int vrowspan = rowspan == local_size 
                                             ? rowspan
                                             : rowspan + ( local_size - (rowspan & (local_size-1)));
+    
+    prefetch(source + workgroup_id * rowspan, rowspan);
+
     // create mask in lmem
-    //if ( local_id == 0 ) printf("%d %d %d ", workgroup_id,  rowspan, vrowspan);
     for ( int i = local_id; i < rowspan; i += local_size ) {
-        
-        mask[i] = i == 0 ? 1 :
-        source[workgroup_id * rowspan + i] != source[workgroup_id * rowspan + i - 1];
+        const int a = (source[workgroup_id * rowspan + i] & 0xFF) > 127;
+        const int b = (source[workgroup_id * rowspan + i - 1] & 0xFF) > 127;
+
+        mask[i] = i == 0 ? 1 : a != b;
     }
     localBarrier();
 
@@ -45,7 +62,8 @@ kernel void parle (
     for ( int i = local_id; i < rowspan; i += local_size ) {
         if ( i == ( rowspan - 1) ) {
             compactMask[mask[i]] = i + 1;
-            totalRuns = runs[workgroup_id] = mask[i];
+            // minimum size for CODE128
+            totalRuns = runs[workgroup_id] = mask[i] >= MIN_SEQ_LEN ? mask[i] : 0;
         }
         if (i == 0) {
             compactMask[0] = 0;
@@ -56,6 +74,9 @@ kernel void parle (
     }
     localBarrier();
 
+    if ( totalRuns == 0 )
+        return;
+    
     // riempie symbolsOut e countsOut
     for ( int i = local_id; i < rowspan; i += local_size){
 

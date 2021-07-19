@@ -18,7 +18,10 @@ kernel void minmax (
         length = runs[workgroup_id];
     }
     localBarrier();
-
+    
+    if ( length == 0 )
+        return;
+    
     for ( int i = local_id; i < rowspan; i += local_size ) {
         const int2 out_of_bounds = (int2)(INT_MAX,INT_MIN);
         scratch[i] = i < length - 1 && i > 0

@@ -26,6 +26,8 @@ kernel void remap(
         
     }
     localBarrier();
+    if ( length == 0 )
+        return;
 
     for ( int i = local_id; i < length; i += local_size ) {
         const float src = target[ workgroup_id * rowspan + i ] - minimum ;

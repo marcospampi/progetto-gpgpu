@@ -22,15 +22,19 @@ kernel void unparle(
     const int vrowspan = rowspan == local_size 
                                             ? rowspan
                                             : ( rowspan | (local_size - 1)) + 1;
+    if ( local_id == 0 ) {
+        run = runs[workgroup_id];
+    }
+    localBarrier();
+    if ( run == 0 )
+        return;
+    
     /* clear scratch_a and scratch_b */
     for ( int i = local_id; i < rowspan; i += local_size ) {
         scratch_a[i] = scratch_b[i] = 0;
     }
     
-    if ( local_id == 0 ) {
-        run = runs[workgroup_id];
-    }
-    localBarrier();
+
     {
         #define target scratch_a
         /** copy counts to target/scratch a */
