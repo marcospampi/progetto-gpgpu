@@ -18,9 +18,10 @@ Da fare possibilmente:
 
 Note del docente:
     - Estrazione componente R:
-        usare un kernel trasposto ... row-major -> column-major <OK, a scelta tramite --row-major=True|False>
+        NO: usare un kernel trasposto ... row-major -> column-major <ok, a scelta tramite --row-major=True|False>
+        Rimosso perché il passaggio è stato fuso con il kernel parle.cl
     - Riduzione e mappatura:
         Usare int al posto di float <OK>
     - Tutti i kernel non imbarazzantemente paralleli e primo kernel
-        Rilassare restrizioni immagine
+        Rilassare restrizioni immagine <OK>
         Sliding window con dump in global memory per rilassare restrizioni
