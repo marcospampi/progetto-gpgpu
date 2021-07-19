@@ -18,7 +18,6 @@ kernel void extract( global const int4 *restrict source, global int4 *restrict t
     const int ny = get_global_size(1);
     int4 extracted = source[LOAD_STORE_INDEX];
     
-    int4 test = ((extracted & 0xFF) > threshold); // da rimuovere
-    //test = (int4) (test.x + test.y + test.z + test.w > 2).xxxx;
-    target[LOAD_STORE_INDEX] = test;
+    int4 test = ((extracted & 0xFF) > threshold); 
+    target[LOAD_STORE_INDEX] = 0;
 }

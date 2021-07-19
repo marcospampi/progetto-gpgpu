@@ -107,6 +107,8 @@ long long execute( int NUM_THREADS, std::string source, std::optional<std::strin
                         run = 1;
                     }
                 }
+                if ( runs.size() < 46 )
+                    continue;
                 // normalizza
                 {
                     int rif, min = INT_MAX, max = INT_MIN; for (int i = 1, size = runs.size() -1; i < size; ++i ) {

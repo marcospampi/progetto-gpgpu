@@ -10,20 +10,20 @@ import argparse
 
 #def extract_step( helper: Helper, source: str, threshold: float, row_major: bool ) -> tuple[cl.Event,PictureBuffer]:
 def extract_step( helper, source, threshold, row_major ):
-    utils = helper.program( "kernels/utils.cl", {'ROW_MAJOR': row_major} )
+    #utils = helper.program( "kernels/utils.cl", {'ROW_MAJOR': row_major} )
     sourceImage = helper.picture( source, 'r').push()
-    targetImage = helper.picture( sourceImage.shape, 'rw' )
-    print(sourceImage.shape)
-    grid = targetImage.shape[:2]
-    grid = (targetImage.shape[0], targetImage.shape[1] >> 2)
-    threshold = 0.5*255
-    event = utils.extract(
-        helper.q, grid, None, sourceImage.device, targetImage.device, np.full((4,),threshold, dtype=np.uint32)
-    )
-    sourceImage.release()
-    targetImage.pull()
+    #targetImage = helper.picture( sourceImage.shape, 'rw' )
+    #print(sourceImage.shape)
+    #grid = targetImage.shape[:2]
+    #grid = (targetImage.shape[0], targetImage.shape[1] >> 2)
+    #threshold = 0.5*255
+    #event = utils.extract(
+    #    helper.q, grid, None , sourceImage.device, targetImage.device, np.full((4,),threshold, dtype=np.uint32)
+    #)
+    #sourceImage.release()
+    #targetImage.pull()
 
-    return event, targetImage
+    return sourceImage #event, sourceImage
 
 #def parle_step( helper: Helper, source: PictureBuffer ) -> tuple[cl.Event, ArrayBuffer, ArrayBuffer, ArrayBuffer]:
 def parle_step( helper, source ):
@@ -148,9 +148,10 @@ if __name__ == '__main__':
     # timings
     profile_times = dict()
 
-    event, pictureResult = extract_step( helper, image, 0.5, row_major)
-    print("Extract took {0}".format(helper.profile( event ).prettymicro))
-    profile_times['extract'] = helper.profile( event ).microseconds
+    #event, pictureResult = extract_step( helper, image, 0.5, row_major)
+    #print("Extract took {0}".format(helper.profile( event ).prettymicro))
+    #profile_times['extract'] = helper.profile( event ).microseconds
+    pictureResult = extract_step( helper, image, 0.5, row_major)
 
     event, countsOut, symbolsOut, runs = parle_step(helper, pictureResult)
     print("Parle took {0}".format(helper.profile( event ).prettymicro))
@@ -182,6 +183,8 @@ if __name__ == '__main__':
             exists = found_map[tupled] if tupled in found_map else 0
             found_map[tupled] = exists + 1
    
+    #for key, count in found_map.items():
+    #    print(len(key),count)
     decoded = [  ]
     for key in found_map:
         tests = [

@@ -31,6 +31,8 @@ kernel void unparle(
         run = runs[workgroup_id];
     }
     localBarrier();
+    if ( run == 0 )
+        return;
     {
         #define target scratch_a
         /** copy counts to target/scratch a */
