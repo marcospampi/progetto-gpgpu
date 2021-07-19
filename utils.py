@@ -142,6 +142,7 @@ class Helper:
         self.q = q
         self.ctx = ctx
         self.compiledPrograms = dict()
+        self.preferred_wg_size = None
     
     def array( self, host: np.array, mode: Union[str, int]) -> ArrayBuffer:
         return ArrayBuffer( self.q, self.ctx, host, mode)
@@ -172,9 +173,13 @@ class Helper:
             self.ctx.devices[0].platform.name,
             self.ctx.devices[0].name
         ))
-    
+    def set_preferred_wg_size( self, wg_size ):
+        if type(wg_size) == int:
+            self.preferred_wg_size = wg_size
+
     def bigButNoTooBig(self, max: int ):
-        device_max_group_size = self.ctx.devices[0].max_work_group_size
+        
+        device_max_group_size = self.preferred_wg_size if self.preferred_wg_size != None else self.ctx.devices[0].max_work_group_size
         min = device_max_group_size if device_max_group_size < max else max
         return min 
 # Classe helper per misurare il tempo di esecuzione di un evento
