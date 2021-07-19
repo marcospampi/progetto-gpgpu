@@ -1,9 +1,23 @@
-#define localBarrier()  barrier(CLK_LOCAL_MEM_FENCE);
 /**
  *  Esegue run-length di una riga,
  *  algoritmo adattato da Eric Arnebäck: 
  *      https://erkaman.github.io/posts/cuda_rle.html
  */
+
+#define localBarrier()  barrier(CLK_LOCAL_MEM_FENCE);
+
+/**
+ * Code-128 può avere la codifica più corta, consistente in:
+ * 1 + 7 + 7 + 7 + 8 + 1 = 31 run
+ * q   s   A   c   e   q
+ * q: quiet zone
+ * s: simbolo start
+ * A: simbolo qualsiasi
+ * c: checkdigit
+ * e: simbolo end
+*/
+#define MIN_SEQ_LEN 31
+
 kernel void parle ( 
     const int rowspan,
     global const int * restrict source, 
@@ -49,7 +63,7 @@ kernel void parle (
         if ( i == ( rowspan - 1) ) {
             compactMask[mask[i]] = i + 1;
             // minimum size for CODE128
-            totalRuns = runs[workgroup_id] = mask[i] >= 46 ? mask[i] : 0;
+            totalRuns = runs[workgroup_id] = mask[i] >= MIN_SEQ_LEN ? mask[i] : 0;
         }
         if (i == 0) {
             compactMask[0] = 0;

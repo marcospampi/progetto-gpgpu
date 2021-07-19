@@ -10,6 +10,18 @@
 #include "monitor.hpp"
 #include "argparse.hpp"
 
+/**
+ * Code-128 può avere la codifica più corta, consistente in:
+ * 1 + 7 + 7 + 7 + 8 + 1 = 31 run
+ * q   s   A   c   e   q
+ * q: quiet zone
+ * s: simbolo start
+ * A: simbolo qualsiasi
+ * c: checkdigit
+ * e: simbolo end
+*/
+#define MIN_SEQ_LEN 31
+
 template < class T >
 std::optional<T> front_and_pop( Monitor<std::queue<T>> & mon ) {
     auto lock = mon.safe();
@@ -107,7 +119,7 @@ long long execute( int NUM_THREADS, std::string source, std::optional<std::strin
                         run = 1;
                     }
                 }
-                if ( runs.size() < 46 )
+                if ( runs.size() < MIN_SEQ_LEN )
                     continue;
                 // normalizza
                 {

@@ -8,22 +8,6 @@ from decoders.ean13 import decode_ean13
 from json import dumps
 import argparse
 
-#def extract_step( helper: Helper, source: str, threshold: float, row_major: bool ) -> tuple[cl.Event,PictureBuffer]:
-def extract_step( helper, source, threshold, row_major ):
-    #utils = helper.program( "kernels/utils.cl", {'ROW_MAJOR': row_major} )
-    sourceImage = helper.picture( source, 'r').push()
-    #targetImage = helper.picture( sourceImage.shape, 'rw' )
-    #print(sourceImage.shape)
-    #grid = targetImage.shape[:2]
-    #grid = (targetImage.shape[0], targetImage.shape[1] >> 2)
-    #threshold = 0.5*255
-    #event = utils.extract(
-    #    helper.q, grid, None , sourceImage.device, targetImage.device, np.full((4,),threshold, dtype=np.uint32)
-    #)
-    #sourceImage.release()
-    #targetImage.pull()
-
-    return sourceImage #event, sourceImage
 
 #def parle_step( helper: Helper, source: PictureBuffer ) -> tuple[cl.Event, ArrayBuffer, ArrayBuffer, ArrayBuffer]:
 def parle_step( helper, source ):
@@ -130,12 +114,10 @@ def unparle_step( helper, symbolsIn, countsIn, runs):
 if __name__ == '__main__':
     argparser = argparse.ArgumentParser()
     argparser.add_argument("--image","-i", default="samples/zucchero.jpg")
-    argparser.add_argument("--row-major","-rowM", type=bool, default=False)
     argparser.add_argument("--json-profile","-jp", type=str, default=None, required=False)
     argparser.add_argument("--preferred-wg-size","-wg", type=int, required=False, default=None)
     args = argparser.parse_args()
     image = args.image
-    row_major = args.row_major
     # context
     ctx = cl.create_some_context()
     
@@ -150,12 +132,10 @@ if __name__ == '__main__':
     # timings
     profile_times = dict()
 
-    #event, pictureResult = extract_step( helper, image, 0.5, row_major)
-    #print("Extract took {0}".format(helper.profile( event ).prettymicro))
-    #profile_times['extract'] = helper.profile( event ).microseconds
-    pictureResult = extract_step( helper, image, 0.5, row_major)
 
-    event, countsOut, symbolsOut, runs = parle_step(helper, pictureResult)
+    sourceImage = helper.picture( image, 'r').push()
+
+    event, countsOut, symbolsOut, runs = parle_step(helper, sourceImage)
     print("Parle took {0}".format(helper.profile( event ).prettymicro))
     profile_times['parle'] = helper.profile( event ).microseconds
 
