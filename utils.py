@@ -179,9 +179,9 @@ class Helper:
 
     def bigButNoTooBig(self, max: int ):
         
-        device_max_group_size = self.preferred_wg_size if self.preferred_wg_size != None else self.ctx.devices[0].max_work_group_size
+        device_max_group_size = self.ctx.devices[0].max_work_group_size
         min = device_max_group_size if device_max_group_size < max else max
-        return min 
+        return min if self.preferred_wg_size == None else self.preferred_wg_size
 # Classe helper per misurare il tempo di esecuzione di un evento
 class ProfilingHelper:
     def __init__ ( self, event: cl.Event ):
